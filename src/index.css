@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #383838;
+  --color-secondary: #394146;
+  --color-brand: #0198e9;
+    --background-image-badge: linear-gradient(90deg,rgba(255, 122, 0, 1) 0%, rgba(255, 184, 0, 1) 50%);
+ 
+}
+
+@utility container {
+  margin: auto;
+  padding: 0 15px;
+}
