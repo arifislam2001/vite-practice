@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-
-const API_URL = "http://localhost:8000/registration";
+// import { useRegisterUserMutation } from "../services/api";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
@@ -12,29 +12,17 @@ const RegistrationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-    
-    const result = await res.json();   
-    setMessage(result.message);        
-    
+      const result = await registerUser(formData).unwrap();
+      setMessage(result.message);
     } catch (err) {
-      setMessage("Server e connect kora jacche na");
+      setMessage(err?.data?.message || "Server e connect kora jacche na");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-100">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white p-8 rounded-xl shadow-sm border border-neutral-200"
-      >
+      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-white p-8 rounded-xl shadow-sm border border-neutral-200">
         <h1 className="text-xl font-bold text-neutral-900 mb-6">Create account</h1>
 
         <input
@@ -68,9 +56,10 @@ const RegistrationForm = () => {
 
         <button
           type="submit"
-          className="w-full py-2 text-sm font-semibold text-white bg-neutral-900 rounded-md hover:bg-neutral-800"
+          disabled={isLoading}
+          className="w-full py-2 text-sm font-semibold text-white bg-neutral-900 rounded-md hover:bg-neutral-800 disabled:opacity-50"
         >
-          Register
+          {isLoading ? "Registering..." : "Register"}
         </button>
 
         {message && (

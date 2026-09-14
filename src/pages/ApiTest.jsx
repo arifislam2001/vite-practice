@@ -29,42 +29,90 @@
 //   )
 // }
 
-// export default ApiTest
-import React, { useEffect, useState } from 'react'
+// // export default ApiTest
+import React, { useState } from 'react'
+import { useRegisterUserMutation } from '../services/api'
 
 const ApiTest = () => {
-  const [ User , setUserdata] = useState([])
+  const [Fromdata, setFormData] = useState({ username: "", email: "", password: "" });
+ const [register, { isLoading }] = useRegisterUserMutation();
+  const [message, setmessage] = useState("");
 
-  useEffect(() => {
-    const Apidata = async () => {
-      try {
-        const res = await fetch("http://localhost:8000/alluser")
-        const data = await res.json()
-         setUserdata(data)
-         console.log(data);
-         
-      } catch (error) {
-        console.log(error);
+  const handlechange = (e) => {
+    setFormData({ ...Fromdata, [e.target.name]: e.target.value })
+  }
 
-      }
+  const handlesubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await register(Fromdata).unwrap()
+      setmessage(res.message)
+    } catch (err) {
+      setmessage(err?.data?.message || "can't connected server")
     }
-    Apidata()
-  }, [])
 
+
+  }
   return (
-    <div>
-       {
-        User?.map((item)=>(
-         <div className='mt-5 m-4 p-4 border w-50 text-white bg-blue-500 rounded-2xl '>
-           <h1 key={item.id}>{item.username}</h1>
-           <h1 key={item.id}>{item.email}</h1>
-           <h1 key={item.id}>{item.password}</h1>
+    <div className='min-h-screen flex items-center justify-center'>
+      <form onSubmit={handlesubmit} className='w-full max-w-sm p-12 bg-white rounded-xl shadow-sm border border-neutral-200'>
+        <h1 className='text-xl p-12'>Create account </h1>
+        <input
+          type="name"
+          name='username'
+          onChange={handlechange}
+          value={Fromdata.username}
+          required
+          placeholder='username'
 
+
+          className='w-full px-4 py-2 mb-4 border border-neutral-300 rounded-md outline-none focus:ring-2 focus:ring-neutral-300 '
+        />
+        <input
+          type="email"
+          name='email'
+          placeholder='Email'
+          value={Fromdata.email}
+          onChange={handlechange}
+          required
+
+          className='w-full px-4 py-2 mb-4 border border-neutral-300 rounded-md outline-none focus:ring-2 focus:ring-neutral-300 '
+        />
+        <input
+          type="password"
+          name='password'
+          placeholder='Password'
+          value={Fromdata.password}
+          onChange={handlechange}
+          required
+
+          className='w-full px-4 py-2 mb-4 border border-neutral-300 rounded-md outline-none focus:ring-2 focus:ring-neutral-300 '
+        />
+
+        <button
+          type="submit"
+          className='w-full text-sm py-2 text-semibold text-white bg-neutral-900 '
+          disabled={isLoading}
+          required
          
 
-         </div>
-        ))
-       }
+          >
+            {isLoading ? "Registation...." : "Register"}
+          
+        
+          
+
+        </button>
+           
+          {
+            message &&(
+              <p className='mt-4 text-sm text-center text-neutral-700'>{message}</p>
+            )
+              
+            
+          }
+      </form>
     </div>
   )
 }

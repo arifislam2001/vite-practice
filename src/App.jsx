@@ -7,6 +7,7 @@ import ProductDetails from './pages/ProductDetails'
 import ApiTest from './pages/ApiTest'
 import AddProductForm from './pages/AddProductForm'
 import RegistrationForm from './pages/RegistrationForm'
+import NewProduct from './pages/NewProduct'
 
 const App = () => {
   return (
@@ -14,6 +15,8 @@ const App = () => {
       <Routes>
         <Route path='api' element={<ApiTest />} />
         <Route path='register' element={<RegistrationForm />} />
+        <Route path='newproduct' element={<NewProduct/>} />
+        
         <Route path='add-product' element={<AddProductForm/>} /> 
         <Route path='/' element={<Layout />} >
          <Route index element={<Home/>}/>
