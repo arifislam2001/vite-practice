@@ -46,9 +46,9 @@ const ApiTest = () => {
   const [deleteUser] = useDeleateuserMutation();
   const [updateUser] = useUpdateUserMutation();
 
-  // আপডেটের জন্য নতুন দুইটা state
-  const [editId, setEditId] = useState(null);      // কোন ইউজার এডিট হচ্ছে তার id
-  const [editName, setEditName] = useState("");    // এডিট বক্সে যা লেখা হচ্ছে
+
+  const [editId, setEditId] = useState(null);      
+  const [editName, setEditName] = useState("");    
 
   const handledelete = async (id) => {
     try {
@@ -58,13 +58,12 @@ const ApiTest = () => {
     }
   };
 
-  // Edit বাটনে ক্লিক করলে — এডিট মোড চালু হবে
+
   const startEdit = (item) => {
     setEditId(item._id);
     setEditName(item.username);
   };
 
-  // Cancel বাটনে ক্লিক করলে — এডিট মোড বন্ধ
   const cancelEdit = () => {
     setEditId(null);
     setEditName("");
@@ -151,7 +150,7 @@ const handleUpdate = async (id) => {
               className='bg-gradient-to-b from-purple-600 to-purple-400 rounded-2xl p-8 text-white shadow-lg'
             >
               {editId === item._id ? (
-                // ===== এডিট মোড =====
+           
                 <>
                   <input
                     value={editName}
