@@ -3,8 +3,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const apiService = createApi({
   reducerPath: "apiService",
   baseQuery: fetchBaseQuery({
-    baseUrl: " http://localhost:9000",
+    baseUrl: " http://localhost:9000/api/v1",
   }),
+  tagTypes: ["Users"],
   endpoints: (builder) => ({
     getproducts: builder.query({
       query: ({category, limit , skip, search}) => 
@@ -22,16 +23,25 @@ export const apiService = createApi({
     }),
 
     getnewuserdata: builder.query({
-      query: ()=> "/alluser"
+      query: ( )=> "/alluser",
+      providesTags: ["Users"],
     }),
-    //  registerUser: builder.mutation({
-    //   query: (userData) => ({
-    //     url: "/registation",
-    //     method: "POST",
-    //     body: userData,
-    //   }),
-    // }),
-
+    
+    deleateuser : builder.mutation({
+     query : (id)=>({
+      url : `/delete/${id}`,
+      method : "DELETE",
+        }),
+      invalidatesTags: ["Users"],
+    }),
+     updateUser: builder.mutation({
+  query: ({ id, ...data }) => ({
+    url: `/update/${id}`,
+    method: "PUT",
+    body: data,
+  }),
+  invalidatesTags: ["User"],
+}),
     registerUser : builder.mutation({
       query : (userdata) => ({
         url : "/registation",
@@ -42,4 +52,13 @@ export const apiService = createApi({
   }),
 });
 
-export const { useGetproductsQuery , useGetCatagoryListQuery , useGetProductDetailsQuery , useGetSearchSuggestionsQuery , useGetnewuserdataQuery ,  useRegisterUserMutation} = apiService;
+export const {
+     useGetproductsQuery , 
+    useGetCatagoryListQuery ,
+    useGetProductDetailsQuery ,
+     useGetSearchSuggestionsQuery ,
+     useGetnewuserdataQuery , 
+      useRegisterUserMutation,
+      useDeleateuserMutation,
+      useUpdateUserMutation
+    } = apiService;
