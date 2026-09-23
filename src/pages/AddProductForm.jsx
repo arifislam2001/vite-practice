@@ -89,14 +89,12 @@ function AddProductForm() {
           </button>
         </form>
 
-        {/* সাফল্য মেসেজ */}
         {message && (
           <p className="mt-4 p-3 bg-green-100 text-green-700 font-bold rounded-lg">
             {message}
           </p>
         )}
-
-        {/* এরর মেসেজ */}
+                              
         {error && (
           <p className="mt-4 p-3 bg-red-100 text-red-700 font-bold rounded-lg">
             {error}
