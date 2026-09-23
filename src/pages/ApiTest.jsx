@@ -77,21 +77,20 @@ const ApiTest = () => {
     }
   };
 
-  // এখানেই মূল পরিবর্তন — FormData API ব্যবহার
   const handlesubmit = async (e) => {
     e.preventDefault();
 
-    // ফর্ম এলিমেন্ট থেকে সরাসরি FormData বানানো হলো
+   
     const formData = new FormData(e.target);
     console.log(formData);
     
     
-    // formData এখন username, email, password, picture (file) সবকিছু ধরে রেখেছে
+   
 
     try {
       const res = await register(formData).unwrap();
       setmessage(res.message);
-      e.target.reset(); // ফর্ম খালি করে দিলো সাবমিটের পর
+      e.target.reset(); 
     } catch (err) {
       setmessage(err?.data?.message || "can't connected server");
     }
@@ -103,7 +102,7 @@ const ApiTest = () => {
         <form onSubmit={handlesubmit} className='w-full max-w-sm p-12 bg-white rounded-xl shadow-sm border border-neutral-200'>
           <h1 className='text-xl p-12'>Create account</h1>
 
-          {/* প্রতিটা input এ name attribute থাকতেই হবে, এটাই FormData এর জন্য জরুরি */}
+          
           <input
             type="text"
             name='username'
@@ -126,7 +125,6 @@ const ApiTest = () => {
             className='w-full px-4 py-2 mb-4 border border-neutral-300 rounded-md outline-none focus:ring-2 focus:ring-neutral-300'
           />
 
-          {/* ছবির জন্য file input, name অবশ্যই backend এর multer field name এর সাথে মিলতে হবে */}
           <input
             type="file"
             name='picture'
@@ -180,7 +178,7 @@ const ApiTest = () => {
                     style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }}
                   />
                   <div className='flex gap-2 mt-4'>
-                    <button onClick={() => startEdit(item)} className='bg-blue-600 px-4 py-2 text-white rounded-xl'>Edit</button>
+                    <button onClick={() => startEdit(item)} className='bg-blue-600 px-4 py-3 text-white rounded-xl'>Edit</button>
                     <button onClick={() => handledelete(item._id)} className='bg-red-600 px-4 py-2 text-white rounded-xl'>Delete</button>
                   </div>
                 </>
