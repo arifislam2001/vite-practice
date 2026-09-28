@@ -45,7 +45,8 @@ const ApiTest = () => {
   const { data } = useGetnewuserdataQuery();
   const [deleteUser] = useDeleateuserMutation();
   const [updateUser] = useUpdateUserMutation();
-
+  console.log(data);
+  
  
   const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState("");
@@ -83,10 +84,6 @@ const ApiTest = () => {
    
     const formData = new FormData(e.target);
     console.log(formData);
-    
-    
-   
-
     try {
       const res = await register(formData).unwrap();
       setmessage(res.message);
@@ -150,6 +147,8 @@ const ApiTest = () => {
         <h2 className='text-3xl font-bold mb-8'>User List:</h2>
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
           {data?.map((item) => (
+         
+            
             <div
               key={item._id}
               className='bg-gradient-to-b from-purple-600 to-purple-400 rounded-2xl p-8 text-white shadow-lg'
@@ -173,9 +172,9 @@ const ApiTest = () => {
                   <p className='text-lg mb-2'>Email: {item.email}</p>
                   <p className='text-lg'>Password: {item.password}</p>
                   <img
-                    src={item.picture ? `${BASE_URL}/uploads/${item.picture}` : 'https://via.placeholder.com/80?text=No+Image'}
+                   src={item.picture ? item.picture : 'https://via.placeholder.com/80?text=No+Image'}
                     alt="picture"
-                    style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' }}
+                    style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
                   />
                   <div className='flex gap-2 mt-4'>
                     <button onClick={() => startEdit(item)} className='bg-blue-600 px-4 py-3 text-white rounded-xl'>Edit</button>
