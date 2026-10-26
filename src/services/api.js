@@ -5,7 +5,12 @@ export const BASE_URL = "http://localhost:9000";
 export const apiService = createApi({
   reducerPath: "apiService",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${BASE_URL}/api/v1/auth`,
+    baseUrl: `${BASE_URL}/api/v1`,
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("accessToken");
+      if (token) headers.set("Authorization", `Bearer ${token}`);
+      return headers;
+    },
   }),
   tagTypes: ["Users"],
   endpoints: (builder) => ({
@@ -29,32 +34,41 @@ export const apiService = createApi({
     }),
 
     getnewuserdata: builder.query({
-      query: () => "/alluser",
+      query: () => "/dashboard/alluser",
       providesTags: ["Users"],
     }),
 
     deleateuser: builder.mutation({
-      query: (id) => ({
-        url: `/delete/${id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Users"],
-    }),
-
+  query: (id) => ({
+    url: `/dashboard/delete/${id}`,
+    method: "DELETE",
+  }),
+  invalidatesTags: ["Users"],
+}),
     updateUser: builder.mutation({
-      query: ({ id, ...data }) => ({
-        url: `/update/${id}`,
-        method: "PUT",
-        body: data,
-      }),
-      invalidatesTags: ["User"],
-    }),
+  query: ({ id, ...data }) => ({
+    url: `/dashboard/update/${id}`,
+    method: "PATCH",
+    body: data,
+  }),
+  invalidatesTags: ["Users"],
+}),
+
+
 
     registerUser: builder.mutation({
       query: (userdata) => ({
-        url: "/registation",
+        url: "/auth/registration",
         method: "POST",
         body: userdata,
+      }),
+    }),
+
+    loginUser: builder.mutation({
+      query: (creds) => ({
+        url: "/auth/login",
+        method: "POST",
+        body: creds,
       }),
     }),
   }),
@@ -67,6 +81,7 @@ export const {
   useGetSearchSuggestionsQuery,
   useGetnewuserdataQuery,
   useRegisterUserMutation,
+  useLoginUserMutation,
   useDeleateuserMutation,
   useUpdateUserMutation,
 } = apiService;

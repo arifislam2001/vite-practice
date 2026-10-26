@@ -31,23 +31,23 @@
 
 // // export default ApiTest
 import React, { useState } from 'react'
-import { 
-  useDeleateuserMutation, 
-  useGetnewuserdataQuery, 
+import {
+  useDeleateuserMutation,
+  useGetnewuserdataQuery,
   useRegisterUserMutation,
   useUpdateUserMutation,
-  BASE_URL
 } from '../services/api'
 
 const ApiTest = () => {
   const [register, { isLoading }] = useRegisterUserMutation();
   const [message, setmessage] = useState("");
-  const { data } = useGetnewuserdataQuery();
+  const { data: result, error } = useGetnewuserdataQuery();
   const [deleteUser] = useDeleateuserMutation();
   const [updateUser] = useUpdateUserMutation();
-  console.log(data);
-  
- 
+
+  const users = result?.data?.user || [];
+  console.log("USERS RESULT:", result, "ERROR:", error);
+
   const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState("");
 
@@ -60,7 +60,7 @@ const ApiTest = () => {
   };
 
   const startEdit = (item) => {
-    setEditId(item._id);
+    setEditId(item.id);
     setEditName(item.username);
   };
 
@@ -80,15 +80,21 @@ const ApiTest = () => {
 
   const handlesubmit = async (e) => {
     e.preventDefault();
+    const form = new FormData(e.target);
 
-   
-    const formData = new FormData(e.target);
-    console.log(formData);
+    const body = {
+      username: form.get("username"),
+      email: form.get("email"),
+      password: form.get("password"),
+      gender: form.get("gender"),
+    };
+
     try {
-      const res = await register(formData).unwrap();
+      const res = await register(body).unwrap();
       setmessage(res.message);
-      e.target.reset(); 
+      e.target.reset();
     } catch (err) {
+      console.log("REGISTER ERROR:", err);
       setmessage(err?.data?.message || "can't connected server");
     }
   };
@@ -99,7 +105,6 @@ const ApiTest = () => {
         <form onSubmit={handlesubmit} className='w-full max-w-sm p-12 bg-white rounded-xl shadow-sm border border-neutral-200'>
           <h1 className='text-xl p-12'>Create account</h1>
 
-          
           <input
             type="text"
             name='username'
@@ -121,20 +126,22 @@ const ApiTest = () => {
             required
             className='w-full px-4 py-2 mb-4 border border-neutral-300 rounded-md outline-none focus:ring-2 focus:ring-neutral-300'
           />
-
-          <input
-            type="file"
-            name='picture'
-            accept="image/*"
+          <select
+            name="gender"
+            required
             className='w-full px-4 py-2 mb-4 border border-neutral-300 rounded-md outline-none'
-          />
+          >
+            <option value="">Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
 
           <button
             type="submit"
             className='w-full text-sm py-2 text-semibold text-white bg-neutral-900'
             disabled={isLoading}
           >
-            {isLoading ? "Registation...." : "Register"}
+            {isLoading ? "Registration...." : "Register"}
           </button>
 
           {message && (
@@ -145,15 +152,20 @@ const ApiTest = () => {
 
       <div className='max-w-5xl mx-auto px-4'>
         <h2 className='text-3xl font-bold mb-8'>User List:</h2>
+
+        {error && (
+          <p className='mb-4 text-red-600'>
+            Could not load users (status: {error.status}). Login as admin first.
+          </p>
+        )}
+
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
-          {data?.map((item) => (
-         
-            
+          {users.map((item) => (
             <div
-              key={item._id}
+              key={item.id}
               className='bg-gradient-to-b from-purple-600 to-purple-400 rounded-2xl p-8 text-white shadow-lg'
             >
-              {editId === item._id ? (
+              {editId === item.id ? (
                 <>
                   <input
                     value={editName}
@@ -162,7 +174,7 @@ const ApiTest = () => {
                   />
                   <p className='text-lg mb-2'>Email: {item.email}</p>
                   <div className='flex gap-2 mt-4'>
-                    <button onClick={() => handleUpdate(item._id)} className='bg-green-600 px-4 py-2 text-white rounded-xl'>Save</button>
+                    <button onClick={() => handleUpdate(item.id)} className='bg-green-600 px-4 py-2 text-white rounded-xl'>Save</button>
                     <button onClick={cancelEdit} className='bg-gray-600 px-4 py-2 text-white rounded-xl'>Cancel</button>
                   </div>
                 </>
@@ -170,15 +182,15 @@ const ApiTest = () => {
                 <>
                   <h3 className='text-xl font-semibold mb-4'>Name: {item.username}</h3>
                   <p className='text-lg mb-2'>Email: {item.email}</p>
-                  <p className='text-lg'>Password: {item.password}</p>
+                  <p className='text-lg mb-2'>Role: {item.role}</p>
                   <img
-                   src={item.picture ? item.picture : 'https://via.placeholder.com/80?text=No+Image'}
-                    alt="picture"
+                    src={item.profilePicture || 'https://via.placeholder.com/80?text=No+Image'}
+                    alt="profile"
                     style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
                   />
                   <div className='flex gap-2 mt-4'>
                     <button onClick={() => startEdit(item)} className='bg-blue-600 px-4 py-3 text-white rounded-xl'>Edit</button>
-                    <button onClick={() => handledelete(item._id)} className='bg-red-600 px-4 py-2 text-white rounded-xl'>Delete</button>
+                    <button onClick={() => handledelete(item.id)} className='bg-red-600 px-4 py-2 text-white rounded-xl'>Delete</button>
                   </div>
                 </>
               )}
