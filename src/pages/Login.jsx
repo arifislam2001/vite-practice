@@ -5,6 +5,8 @@ import {
   useGetnewuserdataQuery,
   useDeleateuserMutation,
   useUpdateUserMutation,
+  useApproveUserMutation,
+  useDeactiveUserMutation,
 } from '../services/api'
 
 const Login = () => {
@@ -14,10 +16,11 @@ const Login = () => {
 
   const hasToken = !!localStorage.getItem("accessToken");
 
-  // token না থাকলে লিস্ট আনবে না (401 এড়াতে)
   const { data: result, error } = useGetnewuserdataQuery(undefined, { skip: !hasToken });
   const [deleteUser] = useDeleateuserMutation();
   const [updateUser] = useUpdateUserMutation();
+  const [approveUser] = useApproveUserMutation();
+  const [deactiveUser] = useDeactiveUserMutation();
 
   const users = result?.data?.user || [];
 
@@ -37,7 +40,7 @@ const Login = () => {
       localStorage.setItem("refreshToken", res.data.refreshToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      window.location.reload(); // নতুন টোকেন দিয়ে লিস্ট আবার লোড হবে
+      window.location.reload();
     } catch (err) {
       console.log("LOGIN ERROR:", err);
       setMessage(err?.data?.message || "Can't connect to server");
@@ -80,9 +83,27 @@ const Login = () => {
     }
   };
 
+  const handleApprove = async (id) => {
+    try {
+      await approveUser(id).unwrap();
+    } catch (err) {
+      console.log("APPROVE ERROR:", err);
+      alert(err?.data?.message || "Approve failed");
+    }
+  };
+
+  const handleDeactive = async (id) => {
+    try {
+      await deactiveUser(id).unwrap();
+    } catch (err) {
+      console.log("DEACTIVE ERROR:", err);
+      alert(err?.data?.message || "Block failed");
+    }
+  };
+
   return (
     <div className='max-w-5xl mx-auto px-4 py-12'>
-      {/* Login ফর্ম */}
+
       <div className='flex justify-center mb-16'>
         <form
           onSubmit={handleLogin}
@@ -127,7 +148,6 @@ const Login = () => {
         </form>
       </div>
 
-      {/* User List (ফর্মের বাইরে) */}
       <h2 className='text-3xl font-bold mb-8'>User List:</h2>
 
       {!hasToken && (
@@ -165,9 +185,22 @@ const Login = () => {
                 <h3 className='text-xl font-semibold mb-4'>Name: {item.username}</h3>
                 <p className='text-lg mb-2'>Email: {item.email}</p>
                 <p className='text-lg mb-2'>Role: {item.role}</p>
-                <div className='flex gap-2 mt-4'>
+                <p className='text-lg mb-2'>
+                  Status: {item.status ? "Approved" : "Pending"}
+                </p>
+
+                <div className='flex flex-wrap gap-2 mt-4'>
                   <button type="button" onClick={() => startEdit(item)}
                     className='bg-blue-600 px-4 py-2 text-white rounded-xl'>Edit</button>
+
+                  {item.status ? (
+                    <button type="button" onClick={() => handleDeactive(item.id)}
+                      className='bg-yellow-600 px-4 py-2 text-white rounded-xl'>Block</button>
+                  ) : (
+                    <button type="button" onClick={() => handleApprove(item.id)}
+                      className='bg-green-600 px-4 py-2 text-white rounded-xl'>Approve</button>
+                  )}
+
                   <button type="button" onClick={() => handledelete(item.id)}
                     className='bg-red-600 px-4 py-2 text-white rounded-xl'>Delete</button>
                 </div>

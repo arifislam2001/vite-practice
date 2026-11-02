@@ -4,17 +4,18 @@ import Layout from './components/Layout'
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import ProductDetails from './pages/ProductDetails'
-import ApiTest from './pages/ApiTest'
+import ApiTest from './pages/Registation'
 import AddProductForm from './pages/AddProductForm'
 import RegistrationForm from './pages/RegistrationForm'
 import NewProduct from './pages/NewProduct'
 import Login from './pages/Login'
+import Registation from './pages/Registation'
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='api' element={<ApiTest />} />
+        <Route path='registation' element={<Registation />} />
         <Route path='login' element={<Login/>} />
         <Route path='register' element={<RegistrationForm />} />
         <Route path='newproduct' element={<NewProduct/>} />

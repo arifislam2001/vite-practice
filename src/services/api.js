@@ -39,22 +39,37 @@ export const apiService = createApi({
     }),
 
     deleateuser: builder.mutation({
-  query: (id) => ({
-    url: `/dashboard/delete/${id}`,
-    method: "DELETE",
-  }),
-  invalidatesTags: ["Users"],
-}),
+      query: (id) => ({
+        url: `/dashboard/delete-user/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Users"],
+    }),
+
     updateUser: builder.mutation({
-  query: ({ id, ...data }) => ({
-    url: `/dashboard/update/${id}`,
-    method: "PATCH",
-    body: data,
-  }),
-  invalidatesTags: ["Users"],
-}),
+      query: ({ id, ...data }) => ({
+        url: `/dashboard/update/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Users"],
+    }),
 
+    approveUser: builder.mutation({
+      query: (id) => ({
+        url: `/dashboard/approved-user/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Users"],
+    }),
 
+    deactiveUser: builder.mutation({
+      query: (id) => ({
+        url: `/dashboard/deactive-user/${id}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Users"],
+    }),
 
     registerUser: builder.mutation({
       query: (userdata) => ({
@@ -84,4 +99,6 @@ export const {
   useLoginUserMutation,
   useDeleateuserMutation,
   useUpdateUserMutation,
+  useApproveUserMutation,
+  useDeactiveUserMutation,
 } = apiService;

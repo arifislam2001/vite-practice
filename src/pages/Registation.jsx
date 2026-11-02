@@ -38,7 +38,7 @@ import {
   useUpdateUserMutation,
 } from '../services/api'
 
-const ApiTest = () => {
+const Registation = () => {
   const [register, { isLoading }] = useRegisterUserMutation();
   const [message, setmessage] = useState("");
   const { data: result, error } = useGetnewuserdataQuery();
@@ -202,4 +202,4 @@ const ApiTest = () => {
   )
 }
 
-export default ApiTest
+export default Registation
